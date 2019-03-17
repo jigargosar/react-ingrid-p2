@@ -274,7 +274,20 @@ function indent(model) {
 function outdent(model) {
   checkModel(model)
   const currentNode = getCurrentNode(model)
-  if (isRootNode(currentNode)) return
+  if (isRootNode(currentNode) || isRootNode(getParentOf(currentNode)))
+    return
+
+  const oldParent = getParentOf(currentNode)
+  const grandParent = getParentOf(oldParent)
+
+  oldParent.childIds = R.without([currentNode.id])(oldParent.childIds)
+
+  const oldParentIndex = grandParent.childIds.findIndex(
+    R.equals(oldParent.id),
+  )
+  checkIndex(oldParentIndex, grandParent.childIds)
+
+  grandParent.childIds.splice(oldParentIndex + 1, 0, currentNode.id)
 
   checkModel(model)
 }
