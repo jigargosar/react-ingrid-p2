@@ -46,9 +46,34 @@ function useAppModel() {
   return [model]
 }
 
+function validateNode(node) {
+  ow(
+    node,
+    ow.object.exactShape({
+      id: ow.string.nonEmpty,
+      title: ow.string,
+      childIds: ow.array.ofType(String),
+    }),
+  )
+}
+
+function returnString(string) {
+  ow(string, ow.string)
+  return string
+}
+
+function getNodeTitle(node) {
+  validateNode(node)
+  return returnString(node.title)
+}
+
 const RootTree = observer(({ model }) => {
   const node = getDisplayRootNode(model)
-  return <div className="">HW</div>
+  return (
+    <div className="">
+      <div className="">{getNodeTitle(node)}</div>
+    </div>
+  )
 })
 
 RootTree.displayName = 'RootTree'
