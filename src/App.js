@@ -32,14 +32,14 @@ function checkNode(node) {
   return node
 }
 
-function returnString(string) {
+function checkString(string) {
   ow(string, ow.string)
   return string
 }
 
 function getNodeTitle(node) {
   checkNode(node)
-  return returnString(node.title)
+  return checkString(node.title)
 }
 
 function getDisplayRootNode(model) {
