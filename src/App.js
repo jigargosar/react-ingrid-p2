@@ -379,6 +379,8 @@ function useAppModel() {
         ['down', effects.attemptNext],
         ['tab', effects.indent],
         ['shift+tab', effects.outdent],
+        ['left', effects.collapse],
+        ['right', effects.expand],
       ]
 
       const kmTuple = km.find(([key]) => isHotKey(key, e))
@@ -411,6 +413,13 @@ function getNodeChildren(node, model) {
   return checkNodeArray(childNodes)
 }
 
+function getVisibleNodeChildren(node, model) {
+  checkNode(node)
+  checkModel(model)
+
+  return canCollapse(node) ? getNodeChildren(node, model) : []
+}
+
 const NodeTitleLine = observer(({ node, model }) => {
   const isCurrent = useComputed(() => getCurrentNode(model) === node)
   const ref = useRef()
@@ -437,14 +446,17 @@ const NodeTitleLine = observer(({ node, model }) => {
 NodeTitleLine.displayName = 'NodeTitleLine'
 
 const NodeTree = observer(({ node, model }) => {
+  const visibleChildren = getVisibleNodeChildren(node, model)
   return (
     <div className="ph2 code">
       <NodeTitleLine node={node} model={model} />
-      <div className="pl2">
-        {getNodeChildren(node, model).map(childNode => (
-          <NodeTree key={childNode.id} node={childNode} model={model} />
-        ))}
-      </div>
+      {visibleChildren && (
+        <div className="pl2">
+          {visibleChildren.map(childNode => (
+            <NodeTree key={childNode.id} node={childNode} model={model} />
+          ))}
+        </div>
+      )}
     </div>
   )
 })
