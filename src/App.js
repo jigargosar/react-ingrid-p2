@@ -274,23 +274,28 @@ function useAppModel() {
     ),
   )
 
+  function wrapInAction(fnMap) {
+    validate('O', arguments)
+    return R.mapObjIndexed((fn, name) => action(name, fn))(fnMap)
+  }
+
   const effects = useMemo(() => {
-    return {
-      addNewLine: action('addNewLine', function addNewLine() {
+    return wrapInAction({
+      addNewLine: function addNewLine() {
         const current = getCurrentNode(model)
         if (isRootNode(current)) {
           appendNewChild(current, model)
         } else {
           appendNewSiblingAfter(current, model)
         }
-      }),
-      attemptPrev: action('attemptPrev', () => attemptPrev(model)),
-      attemptNext: action('attemptNext', () => attemptNext(model)),
-      indent: action('indent', () => indent(model)),
-      outdent: action('outdent', () => outdent(model)),
-      expand: action('expand', () => expand(model)),
-      collapse: action('collapse', () => collapse(model)),
-    }
+      },
+      attemptPrev: () => attemptPrev(model),
+      attemptNext: () => attemptNext(model),
+      indent: () => indent(model),
+      outdent: () => outdent(model),
+      expand: () => expand(model),
+      collapse: () => collapse(model),
+    })
   }, [])
 
   useEffect(() => {
