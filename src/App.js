@@ -109,9 +109,14 @@ function getIdToPidLookup(model) {
 function getParentOf(node, model) {
   checkNode(node)
   checkModel(model)
-  const idToPid = getIdToPidLookup(model)
-  const pid = idToPid[node.id]
+  return getParentOfId(node.id, model)
+}
 
+function getParentOfId(nodeId, model) {
+  validate('SM', arguments)
+  checkModel(model)
+  const idToPid = getIdToPidLookup(model)
+  const pid = idToPid[nodeId]
   return getNodeById(pid, model)
 }
 
@@ -164,12 +169,22 @@ function maybePrevSibIdOf(node, model) {
   }
 }
 
+function getLastDescendentOrSelf(nodeId, model) {
+  validate('SO', arguments)
+  checkModel(model)
+
+  const lastChildId = R.last(getNodeById(nodeId).childIds)
+
+  return lastChildId ? getLastDescendentOrSelf(nodeId, model) : nodeId
+}
+
 function attemptPrev(model) {
   checkModel(model)
   const currentNode = getCurrentNode(model)
 
   const maybeId = maybePrevSibIdOf(currentNode, model)
   if (maybeId) {
+    getLastDescendentOrSelf(maybeId, model)
     model.currentId = maybeId
   }
 
