@@ -127,11 +127,12 @@ function appendNewSiblingAfter(node, model) {
   checkModel(model)
   const newNode = createNewNode()
   const parent = getParentOf(node, model)
-  const nodeIdx = parent.childIds.findIndex(node.id)
+  const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
   checkIndex(nodeIdx, parent.childIds)
   parent.childIds.splice(nodeIdx + 1, 0, newNode.id)
   model.byId[newNode.id] = newNode
   model.currentId = newNode.id
+  checkModel(model)
 }
 
 function appendNewChild(node, model) {
@@ -141,6 +142,7 @@ function appendNewChild(node, model) {
   node.childIds.push(newNode.id)
   model.byId[newNode.id] = newNode
   model.currentId = newNode.id
+  checkModel(model)
 }
 
 function useAppModel() {
