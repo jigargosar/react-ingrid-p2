@@ -156,8 +156,37 @@ function appendNewChild(node, model) {
   checkModel(model)
 }
 
+function maybeFirstChildIdOf(node, model) {
+  checkNode(node)
+  checkModel(model)
+  return R.head(node.childIds)
+}
+
+function maybeNextSibIdOf(node, model) {
+  checkNode(node)
+  checkModel(model)
+  const parent = getParentOf(node, model)
+  const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
+  checkIndex(nodeIdx, parent.childIds)
+  if (nodeIdx < parent.childIds.length - 1) {
+    return parent.childIds[nodeIdx + 1]
+  } else {
+    return null
+  }
+}
+
 function attemptNext(model) {
   checkModel(model)
+
+  const currentNode = getCurrentNode(model)
+
+  const maybeId =
+    maybeFirstChildIdOf(currentNode, model) ||
+    maybeNextSibIdOf(currentNode, model)
+
+  if (maybeId) {
+    model.currentId = getLastDescendentOrSelf(maybeId, model)
+  }
 
   checkModel(model)
 }
