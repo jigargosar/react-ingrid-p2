@@ -203,10 +203,16 @@ function getNodeChildren(node, model) {
   return checkNodeArray(childNodes)
 }
 
+const NodeTitleLine = observer(({ node, model }) => {
+  return <div className="">{getNodeTitle(node)}</div>
+})
+
+NodeTitleLine.displayName = 'NodeTitleLine'
+
 const NodeTree = observer(({ node, model }) => {
   return (
     <div className="ph2 code">
-      <div className="">{getNodeTitle(node)}</div>
+      <NodeTitleLine node={node} model={model} />
       <div className="pl2">
         {getNodeChildren(node, model).map(childNode => (
           <NodeTree key={childNode.id} node={childNode} model={model} />
