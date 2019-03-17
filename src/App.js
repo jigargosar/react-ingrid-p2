@@ -20,10 +20,14 @@ function validateModel(model) {
   ow(model, ow.object.exactShape({ byId: ow.object.nonEmpty }))
 }
 
+function checkObj(ret) {
+  ow(ret, ow.object.nonEmpty)
+}
+
 function getDisplayRootNode(model) {
   validateModel(model)
   const ret = R.pathOr(null, ['byId', rootId])(model)
-  ow(ret, ow.object.nonEmpty)
+  checkObj(ret)
   return ret
 }
 
