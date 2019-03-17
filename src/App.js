@@ -14,11 +14,18 @@ function createRootNode() {
 function createInitialModel() {
   return {
     byId: { [rootId]: createRootNode() },
+    currentId: rootId,
   }
 }
 
 function checkModel(model) {
-  ow(model, ow.object.exactShape({ byId: ow.object.nonEmpty }))
+  ow(
+    model,
+    ow.object.exactShape({
+      byId: ow.object.nonEmpty,
+      currentId: ow.string.nonEmpty,
+    }),
+  )
   return model
 }
 
