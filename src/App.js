@@ -352,6 +352,10 @@ function getVisibleNodeChildren(node, model) {
   return canCollapse(node) ? getNodeChildren(node, model) : []
 }
 
+function getNodeIcon(node) {
+  return canCollapse(node) ? '-' : canExpand(node) ? '+' : ' '
+}
+
 const NodeTitleLine = observer(({ node, model }) => {
   const isCurrent = useComputed(() => getCurrentNode(model) === node)
   const ref = useRef()
@@ -362,8 +366,13 @@ const NodeTitleLine = observer(({ node, model }) => {
     }
   }, [isCurrent])
   return (
-    <div className="flex pl2">
-      <div className="ph2 flex items-center justify-center">+</div>
+    <div className="flex">
+      <div
+        className="flex items-center justify-center"
+        style={{ width: '1.5rem' }}
+      >
+        {getNodeIcon(node)}
+      </div>
       <div
         ref={ref}
         className={cn('ph2 br2 pv1', { 'bg-blue white': isCurrent })}
