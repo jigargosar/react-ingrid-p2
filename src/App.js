@@ -159,7 +159,7 @@ function appendNewChild(node, model) {
 function maybeFirstChildIdOf(node, model) {
   checkNode(node)
   checkModel(model)
-  return R.head(node.childIds)
+  return R.ifElse(R.isEmpty, R.always(null), R.head)(node.childIds)
 }
 
 function maybeNextSibIdOf(node, model) {
