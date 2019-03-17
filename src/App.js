@@ -266,6 +266,7 @@ function indent(model) {
     oldParent.childIds = R.without([currentNode.id])(oldParent.childIds)
     const newParent = getNodeById(maybePrevSibId, model)
     newParent.childIds.push(currentNode.id)
+    newParent.collapsed = false
   }
 
   checkModel(model)
