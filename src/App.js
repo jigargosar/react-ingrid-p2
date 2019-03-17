@@ -106,6 +106,12 @@ function getIdToPidLookup(model) {
   )(model.byId)
 }
 
+function maybeParentIdOf(node, model) {
+  checkNode(node)
+  checkModel(model)
+  return getIdToPidLookup(model)[node.id]
+}
+
 function getParentOf(node, model) {
   checkNode(node)
   checkModel(model)
@@ -113,7 +119,7 @@ function getParentOf(node, model) {
 }
 
 function getParentOfId(nodeId, model) {
-  validate('SM', arguments)
+  validate('SO', arguments)
   checkModel(model)
   const idToPid = getIdToPidLookup(model)
   const pid = idToPid[nodeId]
@@ -184,8 +190,12 @@ function attemptPrev(model) {
 
   const maybeId = maybePrevSibIdOf(currentNode, model)
   if (maybeId) {
-    getLastDescendentOrSelf(maybeId, model)
-    model.currentId = maybeId
+    model.currentId = getLastDescendentOrSelf(maybeId, model)
+  } else {
+    const maybeId = maybeParentIdOf(currentNode, model)
+    if (maybeId) {
+      model.currentId = maybeId
+    }
   }
 
   checkModel(model)
