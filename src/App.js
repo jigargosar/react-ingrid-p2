@@ -93,8 +93,44 @@ function isRootNode(node) {
   return node.id === rootNodeId
 }
 
-function appendSiblingId(nodeId, siblingId, model) {
-  throw new Error('Not Implemented')
+function getIdToPidLookup(model) {
+  checkModel(model)
+  return R.compose(
+    R.reduce((acc, parentNode) => {
+      parentNode.childIds.forEach(childId => {
+        acc[childId] = parentNode.id
+      })
+      return acc
+    }, {}),
+    R.values,
+  )(model.byId)
+}
+
+function getParentOf(node, model) {
+  checkNode(node)
+  checkModel(model)
+  const idToPid = getIdToPidLookup(model)
+  const pid = idToPid[node.id]
+
+  return getNodeById(pid, model)
+}
+
+function checkIndex(idx, array) {
+  validate('NA', arguments)
+  ow(array, ow.array.nonEmpty)
+  ow(idx, ow.number.greaterThanOrEqual(0))
+  ow(idx, ow.number.lessThan(array.length))
+}
+
+function appendNewSiblingAfter(node, model) {
+  checkNode(node)
+  checkModel(model)
+  const newNode = createNewNode()
+  const parent = getParentOf(node, model)
+  const nodeIdx = parent.childIds.findIndex(node.id)
+  checkIndex(nodeIdx, parent.childIds)
+  parent.childIds.splice(nodeIdx + 1, 0, newNode.id)
+  model.byId[newNode.id] = newNode
 }
 
 function useAppModel() {
@@ -112,15 +148,15 @@ function useAppModel() {
 
   const effects = useMemo(() => {
     return {
-      addNewLine: action(function addNewLine() {
+      addNewLine: action('addNewLine', function addNewLine() {
         const current = getCurrentNode(model)
-        const newNode = createNewNode()
         if (isRootNode(current)) {
+          const newNode = createNewNode()
           current.childIds.push(newNode.id)
+          model.byId[newNode.id] = newNode
         } else {
-          appendSiblingId(newNode.id, current, model)
+          appendNewSiblingAfter(current, model)
         }
-        model.byId[newNode.id] = newNode
       }),
     }
   }, [])
