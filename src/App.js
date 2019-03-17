@@ -283,20 +283,21 @@ function useAppModel() {
     ),
   )
 
-  function wrapInAction(fnMap) {
-    validate('O', arguments)
-    return R.mapObjIndexed((fn, name) => action(name, fn))(fnMap)
-  }
-
   const effects = useMemo(() => {
-    return wrapInAction({
-      addNewLine: () => addNewLine(model),
-      attemptPrev: () => attemptPrev(model),
-      attemptNext: () => attemptNext(model),
-      indent: () => indent(model),
-      outdent: () => outdent(model),
-      expand: () => expand(model),
-      collapse: () => collapse(model),
+    function wrapInActionWithModel(fnMap) {
+      validate('O', arguments)
+      return R.mapObjIndexed((fn, name) => action(name, () => fn(model)))(
+        fnMap,
+      )
+    }
+    return wrapInActionWithModel({
+      addNewLine,
+      attemptPrev,
+      attemptNext,
+      indent,
+      outdent,
+      expand,
+      collapse,
     })
   }, [])
 
