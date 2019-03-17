@@ -375,7 +375,9 @@ const NodeTitleLine = observer(({ node, model }) => {
       </div>
       <div
         ref={ref}
-        className={cn('ph2 br2 pv1', { 'bg-blue white': isCurrent })}
+        className={cn('outline-0 ph2 br2 pv1', {
+          'bg-blue white': isCurrent,
+        })}
         tabIndex={isCurrent ? 0 : null}
       >
         {getNodeTitle(node)}
