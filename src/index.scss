@@ -1,0 +1,68 @@
+@import '~tachyons';
+
+.us-none {
+  user-select: none;
+}
+
+//body,
+//#main,
+//body > div[data-elm-hot='true'] {
+//  min-height: 100%;
+//  overflow: scroll;
+//}
+
+//.ws-pre{
+//  white-space: pre;
+//}
+.ws-pre {
+  white-space: pre;
+}
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.pre-line {
+  white-space: pre-line;
+}
+
+.break-word {
+  word-break: break-word;
+}
+
+.resize-none {
+  resize: none;
+}
+
+.lh-inherit{
+  line-height: inherit;
+}
+
+*:focus,
+.outline-1 {
+  outline-color: dodgerblue;
+  outline-offset: 0px;
+  outline-width: 5px;
+  outline-style: wave;
+}
+
+/*@import './toasties.css';*/
+
+#__parcel__error__overlay__ > div {
+  position: absolute !important;
+  height: unset !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
