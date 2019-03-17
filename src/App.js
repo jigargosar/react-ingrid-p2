@@ -192,7 +192,7 @@ function attemptNext(model) {
     maybeNextSibIdOf(currentNode, model)
 
   if (maybeId) {
-    model.currentId = getLastDescendentOrSelf(maybeId, model)
+    model.currentId = maybeId
   }
 
   checkModel(model)
