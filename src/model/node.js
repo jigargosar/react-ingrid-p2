@@ -85,10 +85,25 @@ export function appendNodeIdAfterSiblingId(nodeId, siblingId, parent) {
 }
 
 export function maybeNextChildId(nodeId, parent) {
+  validate('SO', arguments)
+  checkNode(parent)
   const nodeIdx = parent.childIds.findIndex(R.equals(nodeId))
   checkIndex(nodeIdx, parent.childIds)
   if (nodeIdx < parent.childIds.length - 1) {
     return parent.childIds[nodeIdx + 1]
+  } else {
+    return null
+  }
+}
+
+export function maybePrevChildId(nodeId, parent) {
+  validate('SO', arguments)
+  checkNode(parent)
+
+  const nodeIdx = parent.childIds.findIndex(R.equals(nodeId))
+  checkIndex(nodeIdx, parent.childIds)
+  if (nodeIdx > 0) {
+    return parent.childIds[nodeIdx - 1]
   } else {
     return null
   }
