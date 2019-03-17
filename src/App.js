@@ -273,6 +273,8 @@ function indent(model) {
 
 function outdent(model) {
   checkModel(model)
+  const currentNode = getCurrentNode(model)
+  if (isRootNode(currentNode)) return
 
   checkModel(model)
 }
