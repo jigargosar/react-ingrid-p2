@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { observer, useObservable } from 'mobx-react-lite'
 import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
@@ -8,6 +8,7 @@ import faker from 'faker'
 
 import isHotKey from 'is-hotkey'
 import nanoid from 'nanoid'
+import { action } from 'mobx'
 
 const rootNodeId = 'id_root'
 
@@ -109,23 +110,26 @@ function useAppModel() {
     setCache('app-model', model)
   }, [model])
 
-  function addNewLine() {
-    const current = getCurrentNode(model)
-    const newNode = createNewNode()
-    debugger
-    model.byId[newNode.id] = newNode
-    if (isRootNode(current)) {
-      current.childIds.push(newNode.id)
-    } else {
-      appendSiblingId(newNode.id, current, model)
+  const effects = useMemo(() => {
+    return {
+      addNewLine: action(function addNewLine() {
+        const current = getCurrentNode(model)
+        const newNode = createNewNode()
+        if (isRootNode(current)) {
+          current.childIds.push(newNode.id)
+        } else {
+          appendSiblingId(newNode.id, current, model)
+        }
+        model.byId[newNode.id] = newNode
+      }),
     }
-  }
+  }, [])
 
   useEffect(() => {
     function listener(e) {
       validate('O', arguments)
 
-      const km = [['enter', addNewLine]]
+      const km = [['enter', effects.addNewLine]]
 
       const kmTuple = km.find(([key]) => isHotKey(key, e))
 
