@@ -165,6 +165,7 @@ function maybeFirstChildIdOf(node, model) {
 function maybeNextSibIdOf(node, model) {
   checkNode(node)
   checkModel(model)
+
   const parent = getParentOf(node, model)
   const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
   checkIndex(nodeIdx, parent.childIds)
@@ -194,6 +195,7 @@ function attemptNext(model) {
 function maybePrevSibIdOf(node, model) {
   checkNode(node)
   checkModel(model)
+  if (isRootNode(node)) return null
   const parent = getParentOf(node, model)
   const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
   checkIndex(nodeIdx, parent.childIds)
