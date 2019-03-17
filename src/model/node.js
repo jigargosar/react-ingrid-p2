@@ -83,3 +83,13 @@ export function appendNodeIdAfterSiblingId(nodeId, siblingId, parent) {
   parent.childIds.splice(nodeIdx + 1, 0, nodeId)
   checkNode(parent)
 }
+
+export function maybeNextChildId(nodeId, parent) {
+  const nodeIdx = parent.childIds.findIndex(R.equals(nodeId))
+  checkIndex(nodeIdx, parent.childIds)
+  if (nodeIdx < parent.childIds.length - 1) {
+    return parent.childIds[nodeIdx + 1]
+  } else {
+    return null
+  }
+}

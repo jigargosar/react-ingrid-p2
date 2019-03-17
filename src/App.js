@@ -22,6 +22,7 @@ import {
   createRootNode,
   getNodeTitle,
   isRootNode,
+  maybeNextChildId,
   rootNodeId,
 } from './model/node'
 import { checkIndex } from './ow-helpers'
@@ -120,14 +121,7 @@ function maybeNextSibIdOf(node, model) {
   checkModel(model)
   if (isRootNode(node)) return
 
-  const parent = getParentOf(node, model)
-  const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
-  checkIndex(nodeIdx, parent.childIds)
-  if (nodeIdx < parent.childIds.length - 1) {
-    return parent.childIds[nodeIdx + 1]
-  } else {
-    return null
-  }
+  return maybeNextChildId(node, getParentOf(node, model))
 }
 
 function maybePrevSibIdOf(node, model) {
