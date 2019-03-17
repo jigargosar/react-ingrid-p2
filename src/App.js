@@ -166,13 +166,15 @@ function attemptNext(model) {
   checkModel(model)
 }
 
-function getLastDescendentOrSelf(nodeId, model) {
+function getLastDescendentIdOrSelf(nodeId, model) {
   validate('SO', arguments)
   checkModel(model)
 
   const lastChildId = R.last(getNodeById(nodeId, model).childIds)
 
-  return lastChildId ? getLastDescendentOrSelf(lastChildId, model) : nodeId
+  return lastChildId
+    ? getLastDescendentIdOrSelf(lastChildId, model)
+    : nodeId
 }
 
 function attemptPrev(model) {
@@ -181,7 +183,7 @@ function attemptPrev(model) {
   if (isRootNode(currentNode)) return
   const maybeId = maybePrevSibIdOf(currentNode, model)
   if (maybeId) {
-    model.currentId = getLastDescendentOrSelf(maybeId, model)
+    model.currentId = getLastDescendentIdOrSelf(maybeId, model)
   } else {
     const maybeId = maybeParentIdOf(currentNode, model)
     if (maybeId) {
