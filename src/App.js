@@ -237,6 +237,18 @@ function attemptPrev(model) {
   checkModel(model)
 }
 
+function indent(model) {
+  checkModel(model)
+
+  checkModel(model)
+}
+
+function outdent(model) {
+  checkModel(model)
+
+  checkModel(model)
+}
+
 function useAppModel() {
   const model = useObservable(
     R.compose(
@@ -267,6 +279,8 @@ function useAppModel() {
       }),
       attemptPrev: action('attemptPrev', () => attemptPrev(model)),
       attemptNext: action('attemptNext', () => attemptNext(model)),
+      indent: action('indent', () => indent(model)),
+      outdent: action('outdent', () => outdent(model)),
     }
   }, [])
 
@@ -278,6 +292,8 @@ function useAppModel() {
         ['enter', effects.addNewLine],
         ['up', effects.attemptPrev],
         ['down', effects.attemptNext],
+        ['tab', effects.indent],
+        ['shift+tab', effects.outdent],
       ]
 
       const kmTuple = km.find(([key]) => isHotKey(key, e))
