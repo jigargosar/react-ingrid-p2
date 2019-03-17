@@ -9,37 +9,25 @@ import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 import ow from 'ow'
 import validate from 'aproba'
-import faker from 'faker'
 import cn from 'classnames'
 import isHotKey from 'is-hotkey'
-import nanoid from 'nanoid'
 import { action, autorun } from 'mobx'
-
-const rootNodeId = 'id_root'
-
-function createRootNode() {
-  const rootNode = {
-    id: rootNodeId,
-    childIds: [],
-    title: 'Root',
-    collapsed: false,
-  }
-  return checkNode(rootNode)
-}
-
-function createNewNode() {
-  const newNode = {
-    id: `id_${nanoid()}`,
-    childIds: [],
-    title: faker.name.lastName(),
-    collapsed: false,
-  }
-  return checkNode(newNode)
-}
+import {
+  canCollapse,
+  canExpand,
+  checkNode,
+  checkNodeArray,
+  createNewNode,
+  createRootNode,
+  getNodeTitle,
+  isRootNode,
+  rootNodeId,
+} from './model/node'
 
 function createInitialModel() {
+  const rootNode = createRootNode()
   return {
-    byId: { [rootNodeId]: createRootNode() },
+    byId: { [rootNodeId]: rootNode },
     currentId: rootNodeId,
   }
 }
@@ -55,34 +43,6 @@ function checkModel(model) {
   return model
 }
 
-const nodePredicate = ow.object.exactShape({
-  id: ow.string.nonEmpty,
-  title: ow.string,
-  collapsed: ow.boolean,
-  childIds: ow.array.ofType(ow.string.nonEmpty),
-})
-
-function checkNode(node) {
-  ow(node, nodePredicate)
-  return node
-}
-
-function checkNodeArray(nodeArray) {
-  validate('A', arguments)
-  ow(nodeArray, ow.array.ofType(nodePredicate))
-  return nodeArray
-}
-
-function checkString(string) {
-  ow(string, ow.string)
-  return string
-}
-
-function getNodeTitle(node) {
-  checkNode(node)
-  return checkString(node.title)
-}
-
 function getDisplayRootNode(model) {
   checkModel(model)
   return checkNode(model.byId[rootNodeId])
@@ -91,11 +51,6 @@ function getDisplayRootNode(model) {
 function getCurrentNode(model) {
   checkModel(model)
   return getNodeById(model.currentId, model)
-}
-
-function isRootNode(node) {
-  checkNode(node)
-  return node.id === rootNodeId
 }
 
 function getIdToPidLookup(model) {
@@ -294,21 +249,6 @@ function outdent(model) {
   grandParent.childIds.splice(oldParentIndex + 1, 0, currentNode.id)
 
   checkModel(model)
-}
-
-function hasChildren(node) {
-  checkNode(node)
-  return node.childIds.length > 0
-}
-
-function canExpand(node) {
-  checkNode(node)
-  return hasChildren(node) && node.collapsed
-}
-
-function canCollapse(node) {
-  checkNode(node)
-  return hasChildren(node) && !node.collapsed
 }
 
 function expand(model) {
