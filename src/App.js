@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { observer, useObservable } from 'mobx-react-lite'
-import { getCached } from './cache-helpers'
+import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 
 function useAppModel() {
@@ -14,6 +14,9 @@ function useAppModel() {
       getCached,
     )('app-model'),
   )
+  useEffect(() => {
+    setCache('app-model', model)
+  }, [model])
   return [model]
 }
 
