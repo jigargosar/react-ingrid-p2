@@ -296,6 +296,42 @@ function outdent(model) {
   checkModel(model)
 }
 
+function hasChildren(node) {
+  checkNode(node)
+  return node.childIds.length > 0
+}
+
+function canExpand(node) {
+  checkNode(node)
+  return hasChildren(node) && node.collapsed
+}
+
+function canCollapse(node) {
+  checkNode(node)
+  return hasChildren(node) && !node.collapsed
+}
+
+function expand(model) {
+  checkModel(model)
+  const currentNode = getCurrentNode(model)
+  if (canExpand(currentNode)) {
+    currentNode.collapsed = false
+  }
+
+  checkModel(model)
+}
+
+function collapse(model) {
+  checkModel(model)
+
+  const currentNode = getCurrentNode(model)
+  if (canCollapse(currentNode)) {
+    currentNode.collapsed = true
+  }
+
+  checkModel(model)
+}
+
 function useAppModel() {
   const model = useObservable(
     R.compose(
@@ -328,6 +364,8 @@ function useAppModel() {
       attemptNext: action('attemptNext', () => attemptNext(model)),
       indent: action('indent', () => indent(model)),
       outdent: action('outdent', () => outdent(model)),
+      expand: action('expand', () => expand(model)),
+      collapse: action('collapse', () => collapse(model)),
     }
   }, [])
 
