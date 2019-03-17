@@ -170,6 +170,7 @@ function maybeFirstChildIdOf(node, model) {
 function maybeNextSibIdOf(node, model) {
   checkNode(node)
   checkModel(model)
+  if (isRootNode(node)) return
 
   const parent = getParentOf(node, model)
   const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
@@ -217,13 +218,13 @@ function getLastDescendentOrSelf(nodeId, model) {
 
   const lastChildId = R.last(getNodeById(nodeId, model).childIds)
 
-  return lastChildId ? getLastDescendentOrSelf(nodeId, model) : nodeId
+  return lastChildId ? getLastDescendentOrSelf(lastChildId, model) : nodeId
 }
 
 function attemptPrev(model) {
   checkModel(model)
   const currentNode = getCurrentNode(model)
-
+  if (isRootNode(currentNode)) return
   const maybeId = maybePrevSibIdOf(currentNode, model)
   if (maybeId) {
     model.currentId = getLastDescendentOrSelf(maybeId, model)
@@ -239,6 +240,15 @@ function attemptPrev(model) {
 
 function indent(model) {
   checkModel(model)
+  const currentNode = getCurrentNode(model)
+  if (isRootNode(currentNode)) return
+  const maybePrevSibId = maybePrevSibIdOf(currentNode, model)
+  if (maybePrevSibId) {
+    const oldParent = getParentOf(currentNode, model)
+    oldParent.childIds = R.without([currentNode.id])(oldParent.childIds)
+    const newParent = getNodeById(maybePrevSibId, model)
+    newParent.childIds.push(currentNode.id)
+  }
 
   checkModel(model)
 }
