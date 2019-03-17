@@ -20,14 +20,31 @@ function validateModel(model) {
   ow(model, ow.object.exactShape({ byId: ow.object.nonEmpty }))
 }
 
-function returnNonEmptyObj(ret) {
-  ow(ret, ow.object.nonEmpty)
-  return ret
+function checkNode(node) {
+  ow(
+    node,
+    ow.object.exactShape({
+      id: ow.string.nonEmpty,
+      title: ow.string,
+      childIds: ow.array.ofType(String),
+    }),
+  )
+  return node
+}
+
+function returnString(string) {
+  ow(string, ow.string)
+  return string
+}
+
+function getNodeTitle(node) {
+  checkNode(node)
+  return returnString(node.title)
 }
 
 function getDisplayRootNode(model) {
   validateModel(model)
-  return returnNonEmptyObj(R.pathOr(null, ['byId', rootId])(model))
+  return checkNode(R.pathOr(null, ['byId', rootId])(model))
 }
 
 function useAppModel() {
@@ -44,27 +61,6 @@ function useAppModel() {
   }, [model])
 
   return [model]
-}
-
-function validateNode(node) {
-  ow(
-    node,
-    ow.object.exactShape({
-      id: ow.string.nonEmpty,
-      title: ow.string,
-      childIds: ow.array.ofType(String),
-    }),
-  )
-}
-
-function returnString(string) {
-  ow(string, ow.string)
-  return string
-}
-
-function getNodeTitle(node) {
-  validateNode(node)
-  return returnString(node.title)
 }
 
 const RootTree = observer(({ model }) => {
