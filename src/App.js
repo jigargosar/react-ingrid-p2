@@ -133,6 +133,14 @@ function appendNewSiblingAfter(node, model) {
   model.byId[newNode.id] = newNode
 }
 
+function appendNewChild(node, model) {
+  checkNode(node)
+  checkModel(model)
+  const newNode = createNewNode()
+  node.childIds.push(newNode.id)
+  model.byId[newNode.id] = newNode
+}
+
 function useAppModel() {
   const model = useObservable(
     R.compose(
@@ -151,9 +159,7 @@ function useAppModel() {
       addNewLine: action('addNewLine', function addNewLine() {
         const current = getCurrentNode(model)
         if (isRootNode(current)) {
-          const newNode = createNewNode()
-          current.childIds.push(newNode.id)
-          model.byId[newNode.id] = newNode
+          appendNewChild(current, model)
         } else {
           appendNewSiblingAfter(current, model)
         }
