@@ -172,8 +172,9 @@ function getLastVisibleDescendentIdOrSelf(nodeId, model) {
   validate('SO', arguments)
   checkModel(model)
 
-  if (canCollapse(getNodeById(nodeId, model))) {
-    const lastChildId = R.last(getNodeById(nodeId, model).childIds)
+  const node = getNodeById(nodeId, model)
+  if (canCollapse(node)) {
+    const lastChildId = R.last(node.childIds)
 
     return lastChildId
       ? getLastVisibleDescendentIdOrSelf(lastChildId, model)
