@@ -13,6 +13,7 @@ import cn from 'classnames'
 import isHotKey from 'is-hotkey'
 import { action, autorun } from 'mobx'
 import {
+  appendNodeIdAfterSiblingId,
   canCollapse,
   canExpand,
   checkNode,
@@ -23,6 +24,7 @@ import {
   isRootNode,
   rootNodeId,
 } from './model/node'
+import { checkIndex } from './ow-helpers'
 
 function createInitialModel() {
   const rootNode = createRootNode()
@@ -86,21 +88,12 @@ function getParentOfId(nodeId, model) {
   return getNodeById(pid, model)
 }
 
-function checkIndex(idx, array) {
-  validate('NA', arguments)
-  ow(array, ow.array.nonEmpty)
-  ow(idx, ow.number.greaterThanOrEqual(0))
-  ow(idx, ow.number.lessThan(array.length))
-}
-
 function appendNewSiblingAfter(node, model) {
   checkNode(node)
   checkModel(model)
   const newNode = createNewNode()
   const parent = getParentOf(node, model)
-  const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
-  checkIndex(nodeIdx, parent.childIds)
-  parent.childIds.splice(nodeIdx + 1, 0, newNode.id)
+  appendNodeIdAfterSiblingId(newNode.id, node.id, parent)
   model.byId[newNode.id] = newNode
   model.currentId = newNode.id
   checkModel(model)

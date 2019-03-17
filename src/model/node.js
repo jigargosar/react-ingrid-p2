@@ -2,6 +2,8 @@ import ow from 'ow'
 import validate from 'aproba'
 import nanoid from 'nanoid'
 import faker from 'faker'
+import * as R from 'ramda'
+import { checkIndex } from '../ow-helpers'
 
 export const rootNodeId = 'id_root'
 
@@ -71,4 +73,13 @@ export function canExpand(node) {
 export function canCollapse(node) {
   checkNode(node)
   return hasChildren(node) && !node.collapsed
+}
+
+export function appendNodeIdAfterSiblingId(nodeId, siblingId, parent) {
+  validate('SSO', arguments)
+  checkNode(parent)
+  const nodeIdx = parent.childIds.findIndex(R.equals(siblingId))
+  checkIndex(nodeIdx, parent.childIds)
+  parent.childIds.splice(nodeIdx + 1, 0, nodeId)
+  checkNode(parent)
 }
