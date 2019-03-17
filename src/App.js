@@ -7,7 +7,7 @@ import ow from 'ow'
 const rootId = 'id_root'
 
 function createRootNode() {
-  return { id: rootId, childIds: [], title: 'Root' }
+  return { id: rootId, childIds: [], title: 'Root', collapsed: false }
 }
 
 function createInitialModel() {
@@ -26,6 +26,7 @@ function checkNode(node) {
     ow.object.exactShape({
       id: ow.string.nonEmpty,
       title: ow.string,
+      collapsed: ow.boolean,
       childIds: ow.array.ofType(String),
     }),
   )
