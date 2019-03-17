@@ -14,9 +14,11 @@ function useAppModel() {
       getCached,
     )('app-model'),
   )
+
   useEffect(() => {
     setCache('app-model', model)
   }, [model])
+
   return [model]
 }
 
