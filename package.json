@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "faker": "^4.1.0",
+    "mobx": "^5.9.0",
+    "mobx-react-lite": "^1.1.1",
     "nanoid": "^2.0.1",
     "ramda": "^0.26.1",
     "react": "^16.8.4",
@@ -26,6 +29,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/faker": "^4.1.5",
+    "@types/nanoid": "^1.2.1",
+    "@types/react": "^16.8.8",
+    "@types/react-dom": "^16.8.2",
     "husky": "^1.3.1",
     "lint-staged": "^8.1.5",
     "node-sass": "^4.11.0",
