@@ -256,6 +256,15 @@ function collapse(model) {
   checkModel(model)
 }
 
+function addNewLine(model) {
+  const current = getCurrentNode(model)
+  if (isRootNode(current)) {
+    appendNewChild(current, model)
+  } else {
+    appendNewSiblingAfter(current, model)
+  }
+}
+
 function useAppModel() {
   const model = useObservable(
     R.compose(
@@ -281,14 +290,7 @@ function useAppModel() {
 
   const effects = useMemo(() => {
     return wrapInAction({
-      addNewLine: function addNewLine() {
-        const current = getCurrentNode(model)
-        if (isRootNode(current)) {
-          appendNewChild(current, model)
-        } else {
-          appendNewSiblingAfter(current, model)
-        }
-      },
+      addNewLine: () => addNewLine(model),
       attemptPrev: () => attemptPrev(model),
       attemptNext: () => attemptNext(model),
       indent: () => indent(model),
