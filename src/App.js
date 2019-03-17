@@ -113,13 +113,12 @@ function useAppModel() {
     const current = getCurrentNode(model)
     const newNode = createNewNode()
     debugger
-
+    model.byId[newNode.id] = newNode
     if (isRootNode(current)) {
       current.childIds.push(newNode.id)
     } else {
       appendSiblingId(newNode.id, current, model)
     }
-    model.byId[newNode] = newNode
   }
 
   useEffect(() => {
