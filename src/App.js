@@ -1,8 +1,36 @@
 import React from 'react'
-import { observer } from 'mobx-react-lite'
+import { observer, useObservable } from 'mobx-react-lite'
+import { getCached } from './cache-helpers'
+import * as R from 'ramda'
+
+function useAppModel() {
+  const rootId = 'id_root'
+  const model = useObservable(
+    R.compose(
+      R.mergeDeepRight({
+        byId: { [rootId]: { id: rootId, childIds: [], title: 'Root' } },
+      }),
+      R.defaultTo({}),
+      getCached,
+    )('app-model'),
+  )
+  return [model]
+}
+
+const RootTree = observer(({ model }) => {
+  return <div className="">HW</div>
+})
+
+RootTree.displayName = 'RootTree'
 
 const App = observer(() => {
-  return <div className={`min-vh-100`}>HW</div>
+  const [model] = useAppModel()
+
+  return (
+    <div className={`min-vh-100`}>
+      <RootTree model={model} />
+    </div>
+  )
 })
 
 App.displayName = 'App'
