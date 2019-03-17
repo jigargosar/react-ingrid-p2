@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "aproba": "latest",
+    "classnames": "^2.2.6",
     "faker": "^4.1.0",
     "is-hotkey": "^0.1.4",
     "mobx": "^5.9.0",

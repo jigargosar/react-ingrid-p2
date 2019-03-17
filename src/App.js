@@ -5,7 +5,7 @@ import * as R from 'ramda'
 import ow from 'ow'
 import validate from 'aproba'
 import faker from 'faker'
-
+import cn from 'classnames'
 import isHotKey from 'is-hotkey'
 import nanoid from 'nanoid'
 import { action } from 'mobx'
@@ -204,7 +204,12 @@ function getNodeChildren(node, model) {
 }
 
 const NodeTitleLine = observer(({ node, model }) => {
-  return <div className="">{getNodeTitle(node)}</div>
+  const isCurrent = getCurrentNode(model) === node
+  return (
+    <div className={cn({ 'bg-blue white': isCurrent })}>
+      {getNodeTitle(node)}
+    </div>
+  )
 })
 
 NodeTitleLine.displayName = 'NodeTitleLine'
