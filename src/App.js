@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { observer, useObservable } from 'mobx-react-lite'
+import { observer, useDisposable, useObservable } from 'mobx-react-lite'
 import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 import ow from 'ow'
@@ -8,7 +8,7 @@ import faker from 'faker'
 import cn from 'classnames'
 import isHotKey from 'is-hotkey'
 import nanoid from 'nanoid'
-import { action } from 'mobx'
+import { action, autorun } from 'mobx'
 
 const rootNodeId = 'id_root'
 
@@ -150,9 +150,14 @@ function useAppModel() {
     )('app-model'),
   )
 
-  useEffect(() => {
-    setCache('app-model', model)
-  }, [model])
+  useDisposable(() =>
+    autorun(
+      () => {
+        setCache('app-model', model)
+      },
+      { name: 'AR: setCache app-model' },
+    ),
+  )
 
   const effects = useMemo(() => {
     return {
