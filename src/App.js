@@ -3,13 +3,26 @@ import { observer, useObservable } from 'mobx-react-lite'
 import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 
+const rootId = 'id_root'
+
+function createRootNode() {
+  return { id: rootId, childIds: [], title: 'Root' }
+}
+
+function createInitialById() {
+  return { [rootId]: createRootNode() }
+}
+
+function createInitialModel() {
+  return {
+    byId: createInitialById(),
+  }
+}
+
 function useAppModel() {
-  const rootId = 'id_root'
   const model = useObservable(
     R.compose(
-      R.mergeDeepRight({
-        byId: { [rootId]: { id: rootId, childIds: [], title: 'Root' } },
-      }),
+      R.mergeDeepRight(createInitialModel()),
       R.defaultTo({}),
       getCached,
     )('app-model'),
