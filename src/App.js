@@ -131,6 +131,7 @@ function appendNewSiblingAfter(node, model) {
   checkIndex(nodeIdx, parent.childIds)
   parent.childIds.splice(nodeIdx + 1, 0, newNode.id)
   model.byId[newNode.id] = newNode
+  model.currentId = newNode.id
 }
 
 function appendNewChild(node, model) {
@@ -139,6 +140,7 @@ function appendNewChild(node, model) {
   const newNode = createNewNode()
   node.childIds.push(newNode.id)
   model.byId[newNode.id] = newNode
+  model.currentId = newNode.id
 }
 
 function useAppModel() {
