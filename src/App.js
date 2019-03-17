@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { observer, useObservable } from 'mobx-react-lite'
 import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
+import ow from 'ow'
 
 const rootId = 'id_root'
 
@@ -13,6 +14,17 @@ function createInitialModel() {
   return {
     byId: { [rootId]: createRootNode() },
   }
+}
+
+function validateModel(model) {
+  ow(model, ow.object.exactShape({ byId: ow.object.nonEmpty }))
+}
+
+function getDisplayRootNode(model) {
+  validateModel(model)
+  const ret = R.pathOr(null, ['byId', rootId])(model)
+  ow(ret, ow.object.nonEmpty)
+  return ret
 }
 
 function useAppModel() {
@@ -32,6 +44,7 @@ function useAppModel() {
 }
 
 const RootTree = observer(({ model }) => {
+  const node = getDisplayRootNode(model)
   return <div className="">HW</div>
 })
 
