@@ -145,6 +145,18 @@ function appendNewChild(node, model) {
   checkModel(model)
 }
 
+function attemptNext(model) {
+  checkModel(model)
+
+  checkModel(model)
+}
+
+function attemptPrev(model) {
+  checkModel(model)
+
+  checkModel(model)
+}
+
 function useAppModel() {
   const model = useObservable(
     R.compose(
@@ -173,6 +185,8 @@ function useAppModel() {
           appendNewSiblingAfter(current, model)
         }
       }),
+      attemptPrev: action('attemptPrev', attemptPrev),
+      attemptNext: action('attemptNext', attemptNext),
     }
   }, [])
 
