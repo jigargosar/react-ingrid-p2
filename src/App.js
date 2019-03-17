@@ -9,13 +9,9 @@ function createRootNode() {
   return { id: rootId, childIds: [], title: 'Root' }
 }
 
-function createInitialById() {
-  return { [rootId]: createRootNode() }
-}
-
 function createInitialModel() {
   return {
-    byId: createInitialById(),
+    byId: { [rootId]: createRootNode() },
   }
 }
 
