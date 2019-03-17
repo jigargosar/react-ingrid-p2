@@ -182,6 +182,23 @@ function maybeNextSibIdOf(node, model) {
   }
 }
 
+function maybeNextSibOfFirstAncestor(node, model) {
+  checkNode(node)
+  checkModel(model)
+  const maybeParentId = maybeParentIdOf(node, model)
+  if (maybeParentId) {
+    const parent = getNodeById(maybeParentId, model)
+    const maybeId = maybeNextSibIdOf(parent, model)
+    if (maybeId) {
+      return maybeId
+    } else {
+      return maybeNextSibOfFirstAncestor(parent, model)
+    }
+  } else {
+    return null
+  }
+}
+
 function attemptNext(model) {
   checkModel(model)
 
@@ -189,7 +206,8 @@ function attemptNext(model) {
 
   const maybeId =
     maybeFirstChildIdOf(currentNode, model) ||
-    maybeNextSibIdOf(currentNode, model)
+    maybeNextSibIdOf(currentNode, model) ||
+    maybeNextSibOfFirstAncestor(currentNode, model)
 
   if (maybeId) {
     model.currentId = maybeId
