@@ -122,3 +122,13 @@ export function appendChildIdAndExpand(childId, parent) {
   parent.childIds.push(childId)
   parent.collapsed = false
 }
+
+export function hasVisibleChildren(node) {
+  checkNode(node)
+  return hasChildren(node) && !node.collapsed
+}
+
+export function firstChildId(node) {
+  checkNode(node)
+  return checkString(node.childIds[0])
+}

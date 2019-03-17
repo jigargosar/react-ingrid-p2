@@ -21,7 +21,9 @@ import {
   checkNodeArray,
   createNewNode,
   createRootNode,
+  firstChildId,
   getNodeTitle,
+  hasVisibleChildren,
   isRootNode,
   maybeNextChildId,
   maybePrevChildId,
@@ -113,10 +115,11 @@ function appendNewChild(node, model) {
   checkModel(model)
 }
 
-function maybeFirstChildIdOf(node, model) {
+function maybeFirstVisibleChildIdOf(node, model) {
   checkNode(node)
   checkModel(model)
-  return R.ifElse(R.isEmpty, R.always(null), R.head)(node.childIds)
+
+  return R.ifElse(hasVisibleChildren, firstChildId, R.always(null))(node)
 }
 
 function maybeNextSibIdOf(node, model) {
@@ -157,7 +160,7 @@ function attemptNext(model) {
   const currentNode = getCurrentNode(model)
 
   const maybeId =
-    maybeFirstChildIdOf(currentNode, model) ||
+    maybeFirstVisibleChildIdOf(currentNode, model) ||
     maybeNextSibIdOf(currentNode, model) ||
     maybeNextSibOfFirstAncestor(currentNode, model)
 
