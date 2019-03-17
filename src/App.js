@@ -274,11 +274,14 @@ function indent(model) {
 function outdent(model) {
   checkModel(model)
   const currentNode = getCurrentNode(model)
-  if (isRootNode(currentNode) || isRootNode(getParentOf(currentNode)))
+  if (
+    isRootNode(currentNode, model) ||
+    isRootNode(getParentOf(currentNode, model))
+  )
     return
 
-  const oldParent = getParentOf(currentNode)
-  const grandParent = getParentOf(oldParent)
+  const oldParent = getParentOf(currentNode, model)
+  const grandParent = getParentOf(oldParent, model)
 
   oldParent.childIds = R.without([currentNode.id])(oldParent.childIds)
 
