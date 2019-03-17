@@ -63,11 +63,21 @@ function useAppModel() {
   return [model]
 }
 
-const RootTree = observer(({ model }) => {
-  const node = getDisplayRootNode(model)
+const NodeTree = observer(({ node }) => {
   return (
     <div className="ph2 code">
       <div className="">{getNodeTitle(node)}</div>
+    </div>
+  )
+})
+
+NodeTree.displayName = 'NodeTree'
+
+const RootTree = observer(({ model }) => {
+  const node = getDisplayRootNode(model)
+  return (
+    <div className="pa2">
+      <NodeTree node={node} />
     </div>
   )
 })
