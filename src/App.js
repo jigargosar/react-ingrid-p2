@@ -4,17 +4,37 @@ import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 import ow from 'ow'
 import validate from 'aproba'
+import faker from 'faker'
 
-const rootId = 'id_root'
+import isHotKey from 'is-hotkey'
+import nanoid from 'nanoid'
+
+const rootNodeId = 'id_root'
 
 function createRootNode() {
-  return { id: rootId, childIds: [], title: 'Root', collapsed: false }
+  const rootNode = {
+    id: rootNodeId,
+    childIds: [],
+    title: 'Root',
+    collapsed: false,
+  }
+  return checkNode(rootNode)
+}
+
+function createNewNode() {
+  const newNode = {
+    id: `id_${nanoid()}`,
+    childIds: [],
+    title: faker.name.lastName(),
+    collapsed: false,
+  }
+  return checkNode(newNode)
 }
 
 function createInitialModel() {
   return {
-    byId: { [rootId]: createRootNode() },
-    currentId: rootId,
+    byId: { [rootNodeId]: createRootNode() },
+    currentId: rootNodeId,
   }
 }
 
@@ -33,8 +53,9 @@ const nodePredicate = ow.object.exactShape({
   id: ow.string.nonEmpty,
   title: ow.string,
   collapsed: ow.boolean,
-  childIds: ow.array.ofType(String),
+  childIds: ow.array.ofType(ow.string.nonEmpty),
 })
+
 function checkNode(node) {
   ow(node, nodePredicate)
   return node
@@ -58,7 +79,21 @@ function getNodeTitle(node) {
 
 function getDisplayRootNode(model) {
   checkModel(model)
-  return checkNode(model.byId[rootId])
+  return checkNode(model.byId[rootNodeId])
+}
+
+function getCurrentNode(model) {
+  checkModel(model)
+  return getNodeById(model.currentId, model)
+}
+
+function isRootNode(node) {
+  checkNode(node)
+  return node.id === rootNodeId
+}
+
+function appendSiblingId(nodeId, siblingId, model) {
+  throw new Error('Not Implemented')
 }
 
 function useAppModel() {
@@ -73,6 +108,38 @@ function useAppModel() {
   useEffect(() => {
     setCache('app-model', model)
   }, [model])
+
+  function addNewLine() {
+    const current = getCurrentNode(model)
+    const newNode = createNewNode()
+    debugger
+
+    if (isRootNode(current)) {
+      current.childIds.push(newNode.id)
+    } else {
+      appendSiblingId(newNode.id, current, model)
+    }
+    model.byId[newNode] = newNode
+  }
+
+  useEffect(() => {
+    function listener(e) {
+      validate('O', arguments)
+
+      const km = [['enter', addNewLine]]
+
+      const kmTuple = km.find(([key]) => isHotKey(key, e))
+
+      if (kmTuple) {
+        e.preventDefault()
+        kmTuple[1]()
+      }
+    }
+    window.addEventListener('keydown', listener)
+    return () => {
+      window.removeEventListener('keydown', listener)
+    }
+  }, [])
 
   return [model]
 }
