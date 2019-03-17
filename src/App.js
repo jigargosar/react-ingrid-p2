@@ -151,8 +151,27 @@ function attemptNext(model) {
   checkModel(model)
 }
 
+function maybePrevSibIdOf(node, model) {
+  checkNode(node)
+  checkModel(model)
+  const parent = getParentOf(node, model)
+  const nodeIdx = parent.childIds.findIndex(R.equals(node.id))
+  checkIndex(nodeIdx, parent.childIds)
+  if (nodeIdx > 0) {
+    return parent.childIds[nodeIdx - 1]
+  } else {
+    return null
+  }
+}
+
 function attemptPrev(model) {
   checkModel(model)
+  const currentNode = getCurrentNode(model)
+
+  const maybeId = maybePrevSibIdOf(currentNode, model)
+  if (maybeId) {
+    model.currentId = maybeId
+  }
 
   checkModel(model)
 }
@@ -185,8 +204,8 @@ function useAppModel() {
           appendNewSiblingAfter(current, model)
         }
       }),
-      attemptPrev: action('attemptPrev', attemptPrev),
-      attemptNext: action('attemptNext', attemptNext),
+      attemptPrev: action('attemptPrev', () => attemptPrev(model)),
+      attemptNext: action('attemptNext', () => attemptNext(model)),
     }
   }, [])
 
@@ -194,7 +213,11 @@ function useAppModel() {
     function listener(e) {
       validate('O', arguments)
 
-      const km = [['enter', effects.addNewLine]]
+      const km = [
+        ['enter', effects.addNewLine],
+        ['up', effects.attemptPrev],
+        ['down', effects.attemptNext],
+      ]
 
       const kmTuple = km.find(([key]) => isHotKey(key, e))
 
