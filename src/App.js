@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo } from 'react'
-import { observer, useDisposable, useObservable } from 'mobx-react-lite'
+import {
+  observer,
+  useComputed,
+  useDisposable,
+  useObservable,
+} from 'mobx-react-lite'
 import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 import ow from 'ow'
@@ -306,11 +311,14 @@ function getNodeChildren(node, model) {
 }
 
 const NodeTitleLine = observer(({ node, model }) => {
-  const isCurrent = getCurrentNode(model) === node
+  const isCurrent = useComputed(() => getCurrentNode(model) === node)
   return (
     <div className="flex pl2">
       <div className="ph2 flex items-center justify-center">+</div>
-      <div className={cn('ph2 br2 pv1', { 'bg-blue white': isCurrent })}>
+      <div
+        className={cn('ph2 br2 pv1', { 'bg-blue white': isCurrent })}
+        tabIndex={isCurrent ? 0 : null}
+      >
         {getNodeTitle(node)}
       </div>
     </div>
