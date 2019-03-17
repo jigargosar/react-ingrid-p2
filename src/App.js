@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import {
   observer,
   useComputed,
@@ -312,10 +312,18 @@ function getNodeChildren(node, model) {
 
 const NodeTitleLine = observer(({ node, model }) => {
   const isCurrent = useComputed(() => getCurrentNode(model) === node)
+  const ref = useRef()
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (el && document.activeElement !== el) {
+      el.focus()
+    }
+  }, [isCurrent])
   return (
     <div className="flex pl2">
       <div className="ph2 flex items-center justify-center">+</div>
       <div
+        ref={ref}
         className={cn('ph2 br2 pv1', { 'bg-blue white': isCurrent })}
         tabIndex={isCurrent ? 0 : null}
       >
