@@ -215,7 +215,7 @@ function getNodeChildren(node, model) {
 const NodeTitleLine = observer(({ node, model }) => {
   const isCurrent = getCurrentNode(model) === node
   return (
-    <div className={cn({ 'bg-blue white': isCurrent })}>
+    <div className={cn('ph2 br2 pv1', { 'bg-blue white': isCurrent })}>
       {getNodeTitle(node)}
     </div>
   )
