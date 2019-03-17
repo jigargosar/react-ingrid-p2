@@ -3,6 +3,7 @@ import { observer, useObservable } from 'mobx-react-lite'
 import { getCached, setCache } from './cache-helpers'
 import * as R from 'ramda'
 import ow from 'ow'
+import validate from 'aproba'
 
 const rootId = 'id_root'
 
@@ -16,21 +17,26 @@ function createInitialModel() {
   }
 }
 
-function validateModel(model) {
+function checkModel(model) {
   ow(model, ow.object.exactShape({ byId: ow.object.nonEmpty }))
+  return model
 }
 
+const nodePredicate = ow.object.exactShape({
+  id: ow.string.nonEmpty,
+  title: ow.string,
+  collapsed: ow.boolean,
+  childIds: ow.array.ofType(String),
+})
 function checkNode(node) {
-  ow(
-    node,
-    ow.object.exactShape({
-      id: ow.string.nonEmpty,
-      title: ow.string,
-      collapsed: ow.boolean,
-      childIds: ow.array.ofType(String),
-    }),
-  )
+  ow(node, nodePredicate)
   return node
+}
+
+function checkNodeArray(nodeArray) {
+  validate('A', arguments)
+  ow(nodeArray, ow.array.ofType(nodePredicate))
+  return nodeArray
 }
 
 function checkString(string) {
@@ -44,7 +50,7 @@ function getNodeTitle(node) {
 }
 
 function getDisplayRootNode(model) {
-  validateModel(model)
+  checkModel(model)
   return checkNode(model.byId[rootId])
 }
 
@@ -64,10 +70,29 @@ function useAppModel() {
   return [model]
 }
 
-const NodeTree = observer(({ node }) => {
+function getNodeById(id, model) {
+  validate('SO', arguments)
+  checkModel(model)
+  return checkNode(model.byId[id])
+}
+
+function getNodeChildren(node, model) {
+  checkNode(node)
+  checkModel(model)
+
+  const childNodes = node.childIds.map(cid => getNodeById(cid, model))
+  return checkNodeArray(childNodes)
+}
+
+const NodeTree = observer(({ node, model }) => {
   return (
     <div className="ph2 code">
       <div className="">{getNodeTitle(node)}</div>
+      <div className="pl2">
+        {getNodeChildren(node, model).map(childNode => (
+          <NodeTree key={childNode.id} node={childNode} model={model} />
+        ))}
+      </div>
     </div>
   )
 })
@@ -78,7 +103,7 @@ const RootTree = observer(({ model }) => {
   const node = getDisplayRootNode(model)
   return (
     <div className="pa2">
-      <NodeTree node={node} />
+      <NodeTree node={node} model={model} />
     </div>
   )
 })
