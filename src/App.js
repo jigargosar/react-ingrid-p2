@@ -179,7 +179,7 @@ function getLastDescendentOrSelf(nodeId, model) {
   validate('SO', arguments)
   checkModel(model)
 
-  const lastChildId = R.last(getNodeById(nodeId).childIds)
+  const lastChildId = R.last(getNodeById(nodeId, model).childIds)
 
   return lastChildId ? getLastDescendentOrSelf(nodeId, model) : nodeId
 }
