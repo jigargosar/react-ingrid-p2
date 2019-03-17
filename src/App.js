@@ -44,7 +44,7 @@ function getNodeTitle(node) {
 
 function getDisplayRootNode(model) {
   validateModel(model)
-  return checkNode(R.pathOr(null, ['byId', rootId])(model))
+  return checkNode(model.byId[rootId])
 }
 
 function useAppModel() {
