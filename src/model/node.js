@@ -108,3 +108,17 @@ export function maybePrevChildId(nodeId, parent) {
     return null
   }
 }
+
+export function removeChildId(childId, parent) {
+  validate('SO', arguments)
+  checkNode(parent)
+  parent.childIds = R.without([childId])(parent.childIds)
+  checkNode(parent)
+}
+
+export function appendChildIdAndExpand(childId, parent) {
+  validate('SO', arguments)
+  checkNode(parent)
+  parent.childIds.push(childId)
+  parent.collapsed = false
+}

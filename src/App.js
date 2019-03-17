@@ -13,6 +13,7 @@ import cn from 'classnames'
 import isHotKey from 'is-hotkey'
 import { action, autorun } from 'mobx'
 import {
+  appendChildIdAndExpand,
   appendNodeIdAfterSiblingId,
   canCollapse,
   canExpand,
@@ -24,6 +25,7 @@ import {
   isRootNode,
   maybeNextChildId,
   maybePrevChildId,
+  removeChildId,
   rootNodeId,
 } from './model/node'
 import { checkIndex } from './ow-helpers'
@@ -201,10 +203,9 @@ function indent(model) {
   const maybePrevSibId = maybePrevSibIdOf(currentNode, model)
   if (maybePrevSibId) {
     const oldParent = getParentOf(currentNode, model)
-    oldParent.childIds = R.without([currentNode.id])(oldParent.childIds)
+    removeChildId(currentNode.id, oldParent)
     const newParent = getNodeById(maybePrevSibId, model)
-    newParent.childIds.push(currentNode.id)
-    newParent.collapsed = false
+    appendChildIdAndExpand(currentNode.id, newParent)
   }
 
   checkModel(model)
@@ -222,7 +223,7 @@ function outdent(model) {
   const oldParent = getParentOf(currentNode, model)
   const grandParent = getParentOf(oldParent, model)
 
-  oldParent.childIds = R.without([currentNode.id])(oldParent.childIds)
+  removeChildId(currentNode.id, oldParent)
 
   const oldParentIndex = grandParent.childIds.findIndex(
     R.equals(oldParent.id),
